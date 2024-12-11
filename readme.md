@@ -1,5 +1,5 @@
 # 本repo功能
-可以讓兩個用戶a(瀏覽器)將影片使用webrtc傳送到pythonServer後,由pythonServer對影片的frame作處理後再透過webrtc送給用戶b(瀏覽器)
+可以讓兩個用戶a(瀏覽器)將影片使用webrtc傳送到pythonServer後,由pythonServer對影片的frame作處理後再透過webrtc送給用戶b(瀏覽器)。配合已訓練好的香蕉成熟辨識度模型，可以辨識畫面中的香蕉成熟度
 # 環境安裝
 1. 進入pythonServer 資料夾後
     - ```pip install websockets```
