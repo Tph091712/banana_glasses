@@ -21,6 +21,7 @@
 * [注意] <font color="red">請確認所有東西的id都不能重複!!!</font>
 
 # 其他注意事項:
+* 首次使用網頁若碰到不安全無法使用攝影機時，要去chrome flags設定此網站為安全
 * 在uploader的頁面可以呼叫setWH(w,h)傳入想要設定的uploader上傳的影片解析度來調整上傳的影片
 * 在uploader的頁面可以呼叫setMaxCapability來把上傳者的影片解析度跟fps調整到其攝影機的上限
 * setWH跟setMaxCapability需要在uplaoder方呼叫才有用,並且webrtc協議會自動根據當前網路環境跟接收/傳送方的資源幫你自動調整畫質(影片壓縮率),解析度(WH)跟fps,且這個自動調整功能無法關閉T_T,因此如果發現畫質/fps/寬高被自動調整時,我們只能在uploader端呼叫setWH或是setMaxCapability請求webrtc library把畫質跟fps調成我們想要的
