@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 6
+names: ['banana_4', 'banana_5', 'banana_7', 'banana_7.5', 'banana_8', 'banana_8.5']
+
+roboflow:
+  workspace: banana-3hmdj
+  project: banana_version2
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/banana-3hmdj/banana_version2/dataset/2
