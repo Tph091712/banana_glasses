@@ -1,3 +1,33 @@
+# Real-Time Banana Ripeness Detection on Smart Glasses
+
+Undergraduate capstone project (CS, National Tsing Hua University). Live video from BT-300 smart glasses is streamed over WebRTC to an NVIDIA Jetson Xavier, where a YOLOv8 model detects banana ripeness; annotated frames are sent back and shown on the glasses in real time. The goal is to help banana farmers decide when to harvest.
+
+## My contribution
+- **Dataset:** recorded videos at a banana farm in cooperation with a local agricultural company, labeled them with Roboflow, and applied augmentation (1,200 images, 6 ripeness classes).
+- **Model:** trained the YOLOv8 detector (`pythonServer/best.pt`).
+- **Detection logic:** wrote the per-frame inference and the bounding-box/label drawing in `VideoTransformTrack.recv` (`pythonServer/streamProcess.py`).
+- **Deployment:** set up the Jetson Xavier environment and ran the full system with the BT-300 glasses.
+- **Report:** wrote the capstone report and poster (see `other_resources/`).
+
+## Credits
+The WebRTC streaming framework (`wsServer/`, `frontend/`, and the connection/signaling logic in `pythonServer/`) was written by a graduated senior student and inherited for this project. It carries video from the glasses to the Jetson and back.
+
+## Results
+- Validation set (240 images): precision 0.985, recall 0.988, mAP@50 0.992.
+- Inference time: ~40 ms/frame on the Jetson Xavier GPU vs. ~800 ms on a laptop CPU.
+- Limitation: the system was not validated in a field test at the farm.
+
+## Setup
+- Install dependencies: `pip install -r pythonServer/requirements.txt` (on Jetson, use the PyTorch build provided by NVIDIA).
+- Optional environment variables: `MODEL_PATH`, `STUN_URL`, `TURN_URL`, `TURN_USERNAME`, `TURN_CREDENTIAL`. Without STUN/TURN settings, aiortc falls back to its default public STUN server.
+
+## Known issues
+- In the inherited signaling server (`wsServer/index.js`), the duplicate-downloader check in `registerDownloader` does not work as intended, and one log line in `downloaderAns` references an undefined variable.
+
+---
+
+# 使用說明（中文）
+
 # 本repo功能
 可以讓兩個用戶a(瀏覽器)將影片使用webrtc傳送到pythonServer後,由pythonServer對影片的frame作處理後再透過webrtc送給用戶b(瀏覽器)。配合已訓練好的香蕉成熟辨識度模型，可以辨識畫面中的香蕉成熟度
 # 環境安裝
