@@ -7,7 +7,7 @@ Undergraduate capstone project (CS, National Tsing Hua University). Live video f
 - **Model:** trained the YOLOv8 detector (`pythonServer/best.pt`).
 - **Detection logic:** wrote the per-frame inference and the bounding-box/label drawing in `VideoTransformTrack.recv` (`pythonServer/streamProcess.py`).
 - **Deployment:** set up the Jetson Xavier environment and ran the full system with the BT-300 glasses.
-- **Report:** wrote the capstone report and poster (see `other_resources/`).
+- **Report:** wrote the capstone report and poster (not included in this repo).
 
 ## Credits
 The WebRTC streaming framework (`wsServer/`, `frontend/`, and the connection/signaling logic in `pythonServer/`) was written by a graduated senior student and inherited for this project. It carries video from the glasses to the Jetson and back.
@@ -17,7 +17,13 @@ The WebRTC streaming framework (`wsServer/`, `frontend/`, and the connection/sig
 - Inference time: ~40 ms/frame on the Jetson Xavier GPU vs. ~800 ms on a laptop CPU.
 - Limitation: the system was not validated in a field test at the farm.
 
+## Resources
+- Training script: `other_resources/yolov8_model/train_banana.py` (YOLOv8n, 30 epochs, 640×640; set the `DATA_YAML` environment variable to your dataset's `data.yaml`).
+- Dataset: Roboflow link in `other_resources/dataset/dataset_URL`.
+- Sample detection videos: `other_resources/video/`.
+
 ## Setup
+- The trained weights `pythonServer/best.pt` are included, so retraining is optional.
 - Install dependencies: `pip install -r pythonServer/requirements.txt` (on Jetson, use the PyTorch build provided by NVIDIA).
 - Optional environment variables: `MODEL_PATH`, `STUN_URL`, `TURN_URL`, `TURN_USERNAME`, `TURN_CREDENTIAL`. Without STUN/TURN settings, aiortc falls back to its default public STUN server.
 
@@ -28,31 +34,35 @@ The WebRTC streaming framework (`wsServer/`, `frontend/`, and the connection/sig
 
 # 使用說明（中文）
 
-# 本repo功能
-可以讓兩個用戶a(瀏覽器)將影片使用webrtc傳送到pythonServer後,由pythonServer對影片的frame作處理後再透過webrtc送給用戶b(瀏覽器)。配合已訓練好的香蕉成熟辨識度模型，可以辨識畫面中的香蕉成熟度
-# 環境安裝
-1. 進入pythonServer 資料夾後(可直接按照requirements.txt安裝or如下)
-    - ```pip install websockets```
-    - ```pip install aiortc```
-    - ```pip install av```
-    - ```pip install opencv-python```
-2. 進入wsServery 資料夾後
-    - ```npm install```
-# 使用方法:
-1. 進入wsServer資料夾後使用```node index.js```開啟websocket server(預設會在8765 port)
-2. 進入pythonServer資料夾,使用以下指令開啟server,serverId請填入想要設定的serverId
-    ```python server.py -serverId <serverId>```
-3. 進入frontend資料夾,輸入``` node server.js```開啟前端伺服器,前端伺服器預設會開啟在本地的3000 port,這樣就可以從3000 port access 網頁,或是直接點選frontend資料夾中的index.html(請開啟兩個, 一個做為上傳影片方,一個做為下載影片方)
-    1. 上傳方請填入"my user id"欄位跟"to python server id"欄位,"my user id"為這個uploader的id可以隨便設,"to python server id"請填選剛剛開啟的pythonServer的id
-    2. 等待uploader與pythonServer連線(當成功連線時會在螢幕上顯示uploader已成功連線),請等uploader成功連線後再進行第3部(連線downloader)
-    3. 下載方請填入"my user id"跟"connectToUserId","my user id"欄位代表這個downloader的id可以隨便設,"connectToUserId"請填入想要連線到的uploader的id
-4. 此時downloader葉面應該就能看到uploader方拍攝到的畫面,並且是經過影像處理(<font color="red">可自行修改./pythonServer/streamProcess.py中的VideoTransformTrack這個class內部的recv method,將其回傳的frame修改為想要做的處理</font>)
-5. 
-* [注意] <font color="red">請確認所有東西的id都不能重複!!!</font>
+## 本 repo 功能
+可以讓兩個用戶 a（瀏覽器）將影片使用 WebRTC 傳送到 pythonServer 後，由 pythonServer 對影片的 frame 作處理，再透過 WebRTC 送給用戶 b（瀏覽器）。配合已訓練好的香蕉成熟度辨識模型，可以辨識畫面中的香蕉成熟度。
 
-# 其他注意事項:
-* 首次使用網頁若碰到不安全無法使用攝影機時，要去chrome flags設定此網站為安全
-* other_resources的檔案使用時不會用到，只是提供資料給想要更進一步的人
-* 在uploader的頁面可以呼叫setWH(w,h)傳入想要設定的uploader上傳的影片解析度來調整上傳的影片
-* 在uploader的頁面可以呼叫setMaxCapability來把上傳者的影片解析度跟fps調整到其攝影機的上限
-* setWH跟setMaxCapability需要在uplaoder方呼叫才有用,並且webrtc協議會自動根據當前網路環境跟接收/傳送方的資源幫你自動調整畫質(影片壓縮率),解析度(WH)跟fps,且這個自動調整功能無法關閉T_T,因此如果發現畫質/fps/寬高被自動調整時,我們只能在uploader端呼叫setWH或是setMaxCapability請求webrtc library把畫質跟fps調成我們想要的
+## 環境安裝
+1. 進入 `pythonServer` 資料夾後（可直接按照 `requirements.txt` 安裝，或如下）
+    - `pip install websockets`
+    - `pip install aiortc`
+    - `pip install av`
+    - `pip install opencv-python`
+2. 進入 `wsServer` 資料夾後
+    - `npm install`
+
+## 使用方法
+1. 進入 `wsServer` 資料夾後使用 `node index.js` 開啟 websocket server（預設在 8765 port）。
+2. 進入 `pythonServer` 資料夾，使用以下指令開啟 server，`serverId` 請填入想要設定的 serverId：
+    ```
+    python server.py -serverId <serverId>
+    ```
+3. 進入 `frontend` 資料夾，輸入 `node server.js` 開啟前端伺服器，預設在本地的 3000 port，這樣就可以從 3000 port 存取網頁，或是直接開啟 `frontend` 資料夾中的 `index.html`（請開啟兩個，一個作為上傳影片方，一個作為下載影片方）。
+    1. 上傳方請填入 "my user id" 欄位跟 "to python server id" 欄位。"my user id" 是這個 uploader 的 id，可以隨便設；"to python server id" 請填剛剛開啟的 pythonServer 的 id。
+    2. 等待 uploader 與 pythonServer 連線（成功連線時螢幕上會顯示 uploader 已成功連線），請等 uploader 成功連線後再進行第 3 步（連線 downloader）。
+    3. 下載方請填入 "my user id" 跟 "connectToUserId"。"my user id" 代表這個 downloader 的 id，可以隨便設；"connectToUserId" 請填入想要連線到的 uploader 的 id。
+4. 此時 downloader 頁面應該就能看到 uploader 方拍攝到的畫面，並且是經過影像處理的（可自行修改 `./pythonServer/streamProcess.py` 中 `VideoTransformTrack` 這個 class 內部的 `recv` method，將其回傳的 frame 修改為想要做的處理）。
+
+**[注意] 請確認所有東西的 id 都不能重複！**
+
+## 其他注意事項
+* 首次使用網頁若遇到不安全而無法使用攝影機，要去 chrome flags 設定此網站為安全。
+* `other_resources` 內的訓練腳本、資料集連結與範例影片，執行系統時不會用到，只提供想重現訓練或看範例結果的人。
+* 在 uploader 的頁面可以呼叫 `setWH(w,h)`，傳入想要設定的上傳影片解析度。
+* 在 uploader 的頁面可以呼叫 `setMaxCapability`，把上傳者的影片解析度跟 fps 調整到其攝影機的上限。
+* `setWH` 跟 `setMaxCapability` 需要在 uploader 方呼叫才有用。WebRTC 協議會根據當前網路環境與接收/傳送方的資源，自動調整畫質（影片壓縮率）、解析度（WH）跟 fps，且這個自動調整功能無法關閉。因此如果發現畫質、fps 或寬高被自動調整，只能在 uploader 端呼叫 `setWH` 或 `setMaxCapability`，請求 WebRTC library 把畫質跟 fps 調成我們想要的。
