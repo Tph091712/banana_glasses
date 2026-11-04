@@ -8,8 +8,8 @@ const webrtcConfig = {
   iceCandidatePoolSize: 20,
   bundlePolicy: "max-bundle",
   iceServers: [
-    // { urls: "stun:ice4.hsnl.tw:3478", username: "hsnl", credential: "hsnl33564" },
-    // { urls: "turn:ice4.hsnl.tw:3478", username: "hsnl", credential: "hsnl33564" },
+    // { urls: 
+    // { urls: 
   ],
 };
 ws.onopen = () => {
