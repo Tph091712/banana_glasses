@@ -1,5 +1,6 @@
 #coding=utf-8
 import asyncio
+import os
 from argparse import ArgumentParser
 import json
 from aiortc import MediaStreamTrack,RTCPeerConnection, RTCSessionDescription
@@ -15,7 +16,12 @@ import numpy as np
 from ultralytics import YOLO
 
 # Initialize the YOLOv8 model
-model = YOLO('/home/hsnl/Desktop/best.pt')  # Update path to your best.pt
+# Model path: defaults to best.pt next to this file; override with the MODEL_PATH environment variable
+MODEL_PATH = os.environ.get(
+    "MODEL_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "best.pt"),
+)
+model = YOLO(MODEL_PATH)
 
 # 類別名稱
 class_names = {
@@ -29,10 +35,22 @@ class_names = {
 
 uploader=None
 downloader=None
-webRtcConfig = RTCConfiguration(iceServers=[ 
-    RTCIceServer(urls="stun:ice4.hsnl.tw:3478",username="hsnl2",credential="hsnl33564"),
-    RTCIceServer(urls="turn:ice4.hsnl.tw:3478",username="hsnl2",credential="hsnl33564"),
-])
+# STUN/TURN settings are read from environment variables (never commit credentials), e.g.:
+#   STUN_URL=stun:your-server:3478
+#   TURN_URL=turn:your-server:3478
+#   TURN_USERNAME=...  TURN_CREDENTIAL=...
+# If none are set, aiortc falls back to its default public STUN server.
+STUN_URL = os.environ.get("STUN_URL")
+TURN_URL = os.environ.get("TURN_URL")
+TURN_USERNAME = os.environ.get("TURN_USERNAME")
+TURN_CREDENTIAL = os.environ.get("TURN_CREDENTIAL")
+
+_ice_servers = []
+if STUN_URL:
+    _ice_servers.append(RTCIceServer(urls=STUN_URL))
+if TURN_URL:
+    _ice_servers.append(RTCIceServer(urls=TURN_URL, username=TURN_USERNAME, credential=TURN_CREDENTIAL))
+webRtcConfig = RTCConfiguration(iceServers=_ice_servers) if _ice_servers else None
 
 class VideoTransformTrack(MediaStreamTrack):
     kind = "video"
