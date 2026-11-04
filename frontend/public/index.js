@@ -8,8 +8,8 @@ const webrtcConfig = {
   iceCandidatePoolSize: 20,
   bundlePolicy: "max-bundle",
   iceServers: [
-    // { urls: 
-    // { urls: 
+    // { urls: "stun:YOUR_SERVER:3478", username: "YOUR_USERNAME", credential: "YOUR_PASSWORD" },
+    // { urls: "turn:YOUR_SERVER:3478", username: "YOUR_USERNAME", credential: "YOUR_PASSWORD" },
   ],
 };
 ws.onopen = () => {
